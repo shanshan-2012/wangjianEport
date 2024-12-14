@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wang.mgt.dao.ProformaInvoiceDAO">
+    <!-- Insert child entity -->
+    <insert id="insertBroker" parameterType="com.wang.dataload.dto.Broker" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO broker (broker_overseas_name, broker_overseas_address, bank_name, bank_address, bank_account, swift_code,
+        create_time,last_update_date, broker_overseas_phone, broker_domestic_phone, broker_domestic_name, broker_domestic_address)
+        VALUES (#{brokerOverseasName}, #{brokerOverseasAddress}, #{bankName}, #{bankAddress},  #{bankAccount}, #{swiftCode},
+        #{createTime}, #{lastUpdateDate},#{brokerOverseasPhone}, #{brokerDomesticPhone},#{brokerDomesticName}, #{brokerDomesticAddress} )
+    </insert>
+
+    <insert id="insertImportMerchant" parameterType="com.wang.dataload.dto.ImportMerchant" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO import_merchant (merchant_name, merchant_address, create_time, last_update_date)
+        VALUES (#{merchantName}, #{merchantAddress}, #{createTime}, #{lastUpdateDate} )
+    </insert>
+
+    <insert id="insertExportMerchant" parameterType="com.wang.dataload.dto.ExportMerchant" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO export_merchant (merchant_name, merchant_address,merchant_phone, create_time, last_update_date)
+        VALUES (#{merchantName}, #{merchantAddress}, #{merchantPhone},#{createTime}, #{lastUpdateDate} )
+    </insert>
+
+    <!-- Insert parent entity, using the generated child ID -->
+    <insert id="insertProformaInvoice" parameterType="com.wang.dataload.dto.ProformaInvoiceDTO" useGeneratedKeys="true" keyProperty="id">
+        insert into proforma_invoice ( proforma_invoice_num , shipping_method, payment_method,import_merchant_id, broker_id,
+        remark, proforma_invoice_date, create_time, last_update_date, proforma_invoice_to, proforma_invoice_from)
+        values(#{proformaInvoiceNum}, #{shippingMethod}, #{paymentMethod},#{importMerchant.id},#{broker.id},
+        #{remark},#{proformaInvoiceDate}, #{createTime}, #{lastUpdateDate},#{proformaInvoiceTo}, #{proformaInvoiceFrom})
+    </insert>
+
+    <insert id="insertProformaInvoiceItem" parameterType="com.wang.dataload.dto.ProformaInvoiceOrderItemDTO" useGeneratedKeys="true" keyProperty="id">
+        insert into proforma_invoice_order_item ( proforma_invoice_id , product_model, unit_price_rmb,unit_price_usd, amount_usd,
+        amount_rmb, quantity, remark, create_time,last_update_date)
+        values(#{proformaInvoiceOrderId}, #{productModel}, #{unitPriceRMB},#{unitPriceUSD},#{amountUSD},
+        #{amountRMB},#{quantity}, #{remark}, #{createTime},#{lastUpdateDate})
+    </insert>
+
+    <insert id="insertFactoryPurchaseOrder" parameterType="com.wang.dataload.dto.FactoryPurchaseOrderDTO" useGeneratedKeys="true" keyProperty="id">
+        insert into factory_purchase_order ( proforma_invoice_id ,factory_order_number, export_merchant_id, broker_id,
+        remark, delivery_mode, packaging_mode, factory_order_date,create_time, last_update_date,order_sign_location)
+        values(#{proformaInvoiceId}, #{factoryOrderNumber}, #{exportMerchant.id},#{broker.id},
+        #{remark},#{deliverMode}, #{packageMode}, #{factoryOrderDate}, #{createTime}, #{lastUpdateDate},#{orderSignLocation})
+    </insert>
+
+    <insert id="insertFactoryPurchaseOrderItem" parameterType="com.wang.dataload.dto.FactoryPurchaseOrderItemDTO" useGeneratedKeys="true" keyProperty="id">
+        insert into factory_purchase_order_item ( factory_purchase_order_id ,product_model, unit_price_rmb,
+        amount_rmb, quantity, remark, create_time,last_update_date)
+        values(#{factoryPurchaseOrderId},  #{productModel}, #{unitPriceRMB},
+        #{amountRMB},#{quantity}, #{remark}, #{createTime},#{lastUpdateDate})
+    </insert>
+
+
+    <select id="searchProformaInvoiceByNum" resultType="com.wang.dataload.dto.ProformaInvoiceDTO">
+        select t1.* from proforma_invoice t1
+        <include refid="whereId" />
+        order by t1.create_time desc
+    </select>
+
+    <sql id="whereId">
+        <where>
+            <if test="id != null and id != ''">
+                and t1.id = #{id}
+            </if>
+      </where>
+    </sql>
+
+    <select id="searchBrokerById" resultType="com.wang.dataload.dto.Broker">
+        select t1.* from broker t1
+        <include refid="whereId" />
+        order by t1.create_time desc
+    </select>
+
+    <select id="searchImportMerchantById" resultType="com.wang.dataload.dto.ImportMerchant">
+        select t1.* from import_merchant t1
+        <include refid="whereId" />
+        order by t1.create_time desc
+    </select>
+
+
+    <!-- Result map for OrderItem -->
+    <resultMap id="proformaInvoiceOrderItemResultMap" type="com.wang.dataload.dto.ProformaInvoiceOrderItemDTO">
+        <id property="id" column=" id"/>
+        <result property="proformaInvoiceOrderId" column="proforma_invoice_id"/>
+        <result property="productModel" column="product_model"/>
+        <result property="unitPriceRMB" column="unit_price_rmb"/>
+        <result property="unitPriceUSD" column="unit_price_usd"/>
+        <result property="amountUSD" column="amount_usd"/>
+        <result property="amountRMB" column="amount_rmb"/>
+        <result property="quantity" column="quantity"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastUpdateDate" column="last_update_date"/>
+    </resultMap>
+
+    <!-- Result map for Order -->
+    <resultMap id="proformaInvoiceResultMap" type="com.wang.dataload.dto.ProformaInvoiceDTO">
+        <id property="id" column="id"/>
+        <result property="proformaInvoiceNum" column="proforma_invoice_num"/>
+        <result property="shippingMethod" column="shipping_method"/>
+        <result property="paymentMethod" column="payment_method"/>
+        <result property="importMerchant.id" column="import_merchant_id"/>
+        <result property="broker.id" column="broker_id"/>
+        <result property="remark" column="remark"/>
+        <result property="proformaInvoiceDate" column="proforma_invoice_date"/>
+        <result property="createTime" column="create_time"/>
+        <result property="lastUpdateDate" column="last_update_date"/>
+        <result property="proformaInvoiceTo" column="proforma_invoice_to"/>
+        <result property="proformaInvoiceFrom" column="proforma_invoice_from"/>
+        <collection property="proformaInvoiceOrderItemDTOList" ofType="com.wang.dataload.dto.ProformaInvoiceOrderItemDTO" resultMap="proformaInvoiceOrderItemResultMap"/>
+    </resultMap>
+
+    <!-- SQL Query to select Order with its OrderItems -->
+    <select id="selectProformaInvoiceWithItems" resultType="com.wang.dataload.dto.ProformaInvoiceOrderWithItem">
+        SELECT pi.id , pi.proforma_invoice_num , fpo.factory_order_number, p1.import_product_model ,pioi.unit_price_usd, pioi.amount_usd, pioi.quantity as invoiceQuantity,
+        fpoi.unit_price_rmb, fpoi.amount_rmb, fpoi.quantity as factoryQuantity,  pi.proforma_invoice_date
+        FROM proforma_invoice pi
+        INNER JOIN proforma_invoice_order_item pioi ON pi.id = pioi.proforma_invoice_id
+        INNER JOIN product p1 ON pioi.product_model_id = p1.id
+        INNER JOIN factory_purchase_order fpo ON pi.id = fpo.proforma_invoice_id
+       INNER JOIN factory_purchase_order_item fpoi ON fpo.id = fpoi.factory_purchase_order_id
+        INNER JOIN product p2 ON fpoi.product_model_id = p2.id
+        WHERE  p1.import_product_model LIKE CONCAT('%', #{productModel}, '%') and p2.import_product_model LIKE CONCAT('%', #{productModel}, '%') ;
+    </select>
+
+    <select id="selectProductModels" resultType="com.wang.dataload.dto.Product">
+        SELECT distinct import_product_model from product;
+    </select>
+
+</mapper>

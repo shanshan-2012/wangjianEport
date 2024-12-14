@@ -1,0 +1,60 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.31.29.198:3306/wangjianExport?allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8&allowMultiQueries=true&useSSL=false
+    username: root
+    password: ue74%He#i2
+    druid:
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: true
+      testOnReturn: false
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      filters: stat,wall
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      stat-view-servlet:
+        allow: 127.0.0.1
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    joda-date-time-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+  mvc:
+    servlet:
+      load-on-startup: 1
+
+mybatis:
+  type-aliases-package: com.wang.mgt.dao, com.wang.dataload.dao
+  mapper-locations:
+    - classpath:mybatis-mappers/mgt/*.xml
+    - classpath:mybatis-mappers/dataload/*.xml
+  configuration:
+    mapUnderscoreToCamelCase: true
+logging:
+  config: classpath:logback.xml
+log:
+  level:
+    root: info
+    my: debug
+  file: /wangjianExport/backend/logs/wangjian.log
+  maxsize: 30MB
+server:
+  tomcat:
+    basedir: /wangjianExport/backend
+  port: 8092
+
+
+
+    
+    

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wang.dataload.dao.ProformaInvoiceMapper">
+    <!-- Insert child entity -->
+    <insert id="insertBroker" parameterType="com.wang.dataload.dto.Broker" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO broker (broker_overseas_name, broker_overseas_address, bank_name, bank_address, bank_account, swift_code,
+        create_time,last_update_date, broker_overseas_phone, broker_domestic_phone, broker_domestic_name, broker_domestic_address)
+        VALUES (#{brokerOverseasName}, #{brokerOverseasAddress}, #{bankName}, #{bankAddress},  #{bankAccount}, #{swiftCode},
+        #{createTime}, #{lastUpdateDate},#{brokerOverseasPhone}, #{brokerDomesticPhone},#{brokerDomesticName}, #{brokerDomesticAddress} )
+    </insert>
+
+    <select id="searchBrokerByDomesticName" resultType="com.wang.dataload.dto.Broker">
+        select t1.* from broker t1 where broker_domestic_name = #{brokerDomesticName}
+
+    </select>
+
+    <select id="searchBrokerByOverseasName" resultType="com.wang.dataload.dto.Broker">
+        select t1.* from broker t1 where broker_overseas_name = #{brokerOverseasName}
+
+    </select>
+
+    <insert id="insertImportMerchant" parameterType="com.wang.dataload.dto.ImportMerchant" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO import_merchant (merchant_name, merchant_address, create_time, last_update_date)
+        VALUES (#{merchantName}, #{merchantAddress}, #{createTime}, #{lastUpdateDate} )
+    </insert>
+
+    <select id="searchImportMerchantByName" resultType="com.wang.dataload.dto.ImportMerchant">
+        select t1.* from import_merchant t1 where merchant_name = #{merchantName}
+
+    </select>
+
+    <insert id="insertExportMerchant" parameterType="com.wang.dataload.dto.ExportMerchant" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO export_merchant (merchant_name, merchant_address,merchant_phone, create_time, last_update_date)
+        VALUES (#{merchantName}, #{merchantAddress}, #{merchantPhone},#{createTime}, #{lastUpdateDate} )
+    </insert>
+
+    <select id="searchExportMerchantByName" resultType="com.wang.dataload.dto.ExportMerchant">
+        select t1.* from export_merchant t1 where merchant_name = #{merchantName}
+
+    </select>
+
+    <insert id="insertProduct" parameterType="com.wang.dataload.dto.Product" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO product (import_product_model, export_product_model, create_time, last_update_date)
+        VALUES (#{importProductModel}, #{exportProductModel},#{createTime}, #{lastUpdateDate} )
+    </insert>
+
+    <select id="searchProductByImportProductModel" resultType="com.wang.dataload.dto.Product">
+        select t1.* from product t1 where import_product_model = #{importProductModel}
+
+    </select>
+
+    <!-- Insert parent entity, using the generated child ID -->
+    <insert id="insertProformaInvoice" parameterType="com.wang.dataload.dto.ProformaInvoiceDTO" useGeneratedKeys="true" keyProperty="id">
+        insert into proforma_invoice ( proforma_invoice_num , shipping_method, payment_method,import_merchant_id, broker_id,
+        remark, proforma_invoice_date, create_time, last_update_date, proforma_invoice_to, proforma_invoice_from)
+        values(#{proformaInvoiceNum}, #{shippingMethod}, #{paymentMethod},#{importMerchant.id},#{broker.id},
+        #{remark},#{proformaInvoiceDate}, #{createTime}, #{lastUpdateDate},#{proformaInvoiceTo}, #{proformaInvoiceFrom})
+    </insert>
+
+    <insert id="insertProformaInvoiceItem" parameterType="com.wang.dataload.dto.ProformaInvoiceOrderItemDTO" useGeneratedKeys="true" keyProperty="id">
+        insert into proforma_invoice_order_item ( proforma_invoice_id , product_model_id, unit_price_rmb,unit_price_usd, amount_usd,
+        amount_rmb, quantity, remark, create_time,last_update_date)
+        values(#{proformaInvoiceOrderId}, #{product.id}, #{unitPriceRMB},#{unitPriceUSD},#{amountUSD},
+        #{amountRMB},#{quantity}, #{remark}, #{createTime},#{lastUpdateDate})
+    </insert>
+
+    <insert id="insertFactoryPurchaseOrder" parameterType="com.wang.dataload.dto.FactoryPurchaseOrderDTO" useGeneratedKeys="true" keyProperty="id">
+        insert into factory_purchase_order ( proforma_invoice_id ,factory_order_number, export_merchant_id, broker_id,
+        remark, delivery_mode, packaging_mode, factory_order_date,create_time, last_update_date,order_sign_location)
+        values(#{proformaInvoiceId}, #{factoryOrderNumber}, #{exportMerchant.id},#{broker.id},
+        #{remark},#{deliverMode}, #{packageMode}, #{factoryOrderDate}, #{createTime}, #{lastUpdateDate},#{orderSignLocation})
+    </insert>
+
+    <insert id="insertFactoryPurchaseOrderItem" parameterType="com.wang.dataload.dto.FactoryPurchaseOrderItemDTO" useGeneratedKeys="true" keyProperty="id">
+        insert into factory_purchase_order_item ( factory_purchase_order_id ,product_model_id, unit_price_rmb,
+        amount_rmb, quantity, remark, create_time,last_update_date)
+        values(#{factoryPurchaseOrderId},  #{product.id}, #{unitPriceRMB},
+        #{amountRMB},#{quantity}, #{remark}, #{createTime},#{lastUpdateDate})
+    </insert>
+
+
+</mapper>
