@@ -7,9 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 public class FactoryPurchaseOrderFormProcessor implements DataProcessor {
@@ -74,7 +76,7 @@ public class FactoryPurchaseOrderFormProcessor implements DataProcessor {
                 deliveryInd = true;
                 remarkInd = false;
                 factoryPurchaseOrderDTO.setRemark(remarkBF.toString());
-            } else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_PACKAGE)) {
+            } else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_PACKAGE) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_PACKAGE1)) {
                 log.debug(" set order form package ind");
                 packingInd = true;
                 packageBF = new StringBuffer();
@@ -100,9 +102,22 @@ public class FactoryPurchaseOrderFormProcessor implements DataProcessor {
                 orderFormInd = false;
                 exporterMerchantInd = true;
 
-            } else if (cellValue.equals(ExporterConstants.WANGJIAN_EOD)){
+            } else if (((String) cellValue).contains(ExporterConstants.WANGJIAN_EOD)){
                 packingInd = false;
                 factoryPurchaseOrderDTO.setPackageMode(packageBF.toString());
+                String factoryOrderDate = ((String)cellValue).substring(ExporterConstants.WANGJIAN_EOD.length()).trim();
+                log.debug("factoryOrderDate " + factoryOrderDate);
+                SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                Date localDate = null;
+                try {
+                    localDate = formatter1.parse(factoryOrderDate);
+                    log.debug("localDate " + localDate);
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                factoryPurchaseOrderDTO.setFactoryOrderDate(localDate);
             }
 
 

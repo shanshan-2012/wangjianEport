@@ -31,7 +31,7 @@ public class DataFileImporter {
     DataProcessor dataProcessor = null;
     String cellValue = null;
     ProformaInvoiceDTO proformaInvoiceDTO = null;
-    List<FactoryPurchaseOrderDTO> factoryPurchaseOrderDTOList = new ArrayList<>();
+    List<FactoryPurchaseOrderDTO> factoryPurchaseOrderDTOList = null;
     FactoryPurchaseOrderDTO factoryPurchaseOrderDTO = null;
 
     @Autowired
@@ -86,18 +86,18 @@ public class DataFileImporter {
     }
 
     public boolean fileImporter(File file) {
-
+        log.debug("fileImporter filename " + file.getName());
        try (FileInputStream fis = new FileInputStream(file);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
             // Get the first sheet
             Iterator<Sheet> sheetIterator = workbook.sheetIterator();
-
+            log.debug(" retrieve sheet");
             while (sheetIterator.hasNext()) {
                 Sheet sheet = sheetIterator.next();
                 // Iterate through rows
                 Iterator<Row> rowIterator = sheet.iterator();
-
+                log.debug(" retrieve row ");
                 while (rowIterator.hasNext()) {
                     Row row = rowIterator.next();
                     int rowIndex = row.getRowNum();
@@ -118,6 +118,7 @@ public class DataFileImporter {
                 else  if (sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_YOUKAI)) {
                     FactoryPurchaseOrderProcessor factoryPurchaseOrderProcessor = (FactoryPurchaseOrderProcessor)dataProcessor;
                     factoryPurchaseOrderDTO = factoryPurchaseOrderProcessor.getFactoryPurchaseOrderDTO();
+                    factoryPurchaseOrderDTOList = new ArrayList<FactoryPurchaseOrderDTO>();
                     factoryPurchaseOrderDTOList.add(factoryPurchaseOrderDTO);
                     log.debug("factoryPurchaseOrderDTO " + factoryPurchaseOrderDTO.toString());
                 }
@@ -147,20 +148,21 @@ public class DataFileImporter {
                 cellValue = cell.getStringCellValue();
                 // 基于每个sheet 页面的标题，设置状态标志。
                 if (StringUtils.equals(cellValue, ExporterConstants.PROFORMA_INVOICE)) {
-                    log.debug("start to process proforma invoice");
+
                     exportDataType = ExporterConstants.PROFORMA_INVOICE;
                     dataProcessor = ExporterDataProcessorFactory.createProduct(exportDataType);
+                    log.debug("start to process proforma invoice " + dataProcessor.toString());
 
                 } else if (StringUtils.equals(cellValue, ExporterConstants.FACTORY_PURCHASE_ORDER)) {
-                    log.debug("start to process factory purchase order");
 
                     exportDataType = ExporterConstants.FACTORY_PURCHASE_ORDER;
                     dataProcessor = ExporterDataProcessorFactory.createProduct(exportDataType);
+                    log.debug("start to process factory purchase order " + dataProcessor.toString());
                 } else if (StringUtils.equals(cellValue, ExporterConstants.FACTORY_PURCHASE_ORDER_FORM)) {
-                    log.debug("start to process factory purchase order form");
 
                     exportDataType = ExporterConstants.FACTORY_PURCHASE_ORDER_FORM;
                     dataProcessor = ExporterDataProcessorFactory.createProduct(exportDataType);
+                    log.debug("start to process factory purchase order form " + dataProcessor.toString());
                 }
                // 基于状态标志 确定对应处理器
 

@@ -25,8 +25,8 @@
         VALUES (#{merchantName}, #{merchantAddress}, #{createTime}, #{lastUpdateDate} )
     </insert>
 
-    <select id="searchImportMerchantByName" resultType="com.wang.dataload.dto.ImportMerchant">
-        select t1.* from import_merchant t1 where merchant_name = #{merchantName}
+    <select id="searchImportMerchantByAddress" resultType="com.wang.dataload.dto.ImportMerchant">
+        select t1.* from import_merchant t1 where merchant_address = #{merchantAddress}
 
     </select>
 

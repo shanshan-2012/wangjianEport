@@ -9,6 +9,7 @@ import com.wang.dataload.dao.ProformaInvoiceMapper;
 
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @Service
@@ -34,7 +35,7 @@ public class PersistentOrderService {
 
     @Transactional
     public boolean persistentOrder(ProformaInvoiceDTO proformaInvoiceDTO, List<FactoryPurchaseOrderDTO> factoryPurchaseOrderDTOList) {
-        log.debug("start to persistent order");
+        log.debug("start to persistent order  factoryPurchaseOrderDTOList" + factoryPurchaseOrderDTOList.toString());
         ProformaInvoiceDTO proformaInvoiceDTO1 = saveProformaInvoice(proformaInvoiceDTO);
         List<FactoryPurchaseOrderDTO> factoryPurchaseOrderDTOList1 = syncProformaInvoiceOrderItemProductIdWithFactoryPurchaseOrderItem(proformaInvoiceDTO1, factoryPurchaseOrderDTOList);
         saveFactoryPurchaseOrder(factoryPurchaseOrderDTOList1, proformaInvoiceDTO1.getId());
@@ -45,15 +46,17 @@ public class PersistentOrderService {
     public ProformaInvoiceDTO saveProformaInvoice(ProformaInvoiceDTO proformaInvoiceDTO) {
 
         Broker broker = proformaInvoiceMapper.searchBrokerByOverseasName(proformaInvoiceDTO.getBroker().getBrokerOverseasName());
+
         if(broker == null) {
             log.debug("proformaInvoiceDTO " + proformaInvoiceDTO.toString());
+
             proformaInvoiceMapper.insertBroker(proformaInvoiceDTO.getBroker());
             log.debug("after save broker " + proformaInvoiceDTO.getBroker().getId());
         }
         else{
             proformaInvoiceDTO.getBroker().setId(broker.getId());
         }
-        ImportMerchant importMerchant = proformaInvoiceMapper.searchImportMerchantByName(proformaInvoiceDTO.getImportMerchant().getMerchantName());
+        ImportMerchant importMerchant = proformaInvoiceMapper.searchImportMerchantByAddress(proformaInvoiceDTO.getImportMerchant().getMerchantAddress());
         if(importMerchant == null) {
             proformaInvoiceMapper.insertImportMerchant(proformaInvoiceDTO.getImportMerchant());
             log.debug("after save importMerchant " + proformaInvoiceDTO.getImportMerchant().getId());
@@ -87,15 +90,22 @@ public class PersistentOrderService {
     public void saveFactoryPurchaseOrder(List<FactoryPurchaseOrderDTO> factoryPurchaseOrderDTOList, Integer proformaInvoiceId) {
 
         for (FactoryPurchaseOrderDTO factoryPurchaseOrderDTO : factoryPurchaseOrderDTOList) {
-            log.debug("factoryPurchaseOrderDTO " + factoryPurchaseOrderDTO.toString());
+            log.debug("factoryPurchaseOrderDTO after sync " + factoryPurchaseOrderDTO.toString());
             factoryPurchaseOrderDTO.setProformaInvoiceId(proformaInvoiceId);
-            Broker broker = proformaInvoiceMapper.searchBrokerByDomesticName(factoryPurchaseOrderDTO.getBroker().getBrokerDomesticName());
+            Broker brokerDomestic = proformaInvoiceMapper.searchBrokerByDomesticName(factoryPurchaseOrderDTO.getBroker().getBrokerDomesticName());
+            Broker brokerOverseas = proformaInvoiceMapper.searchBrokerByOverseasName(factoryPurchaseOrderDTO.getBroker().getBrokerOverseasName());
 
-            if(broker == null){
-                 proformaInvoiceMapper.insertBroker(factoryPurchaseOrderDTO.getBroker());
+            if(brokerDomestic == null && brokerOverseas == null){
+                Broker brokerIns = factoryPurchaseOrderDTO.getBroker();
+                if(StringUtils.isNotEmpty(brokerIns.getBrokerDomesticName()) || StringUtils.isNotEmpty(brokerIns.getBrokerOverseasName()) ) {
+                    proformaInvoiceMapper.insertBroker(factoryPurchaseOrderDTO.getBroker());
+                }
             }
-            else{
-                factoryPurchaseOrderDTO.getBroker().setId(broker.getId());
+            else if (brokerDomestic != null){
+                factoryPurchaseOrderDTO.getBroker().setId(brokerDomestic.getId());
+            }
+            else if (brokerOverseas != null){
+                factoryPurchaseOrderDTO.getBroker().setId(brokerOverseas.getId());
             }
             log.debug("after save broker " + factoryPurchaseOrderDTO.getBroker().getId());
             ExportMerchant exportMerchant = proformaInvoiceMapper.searchExportMerchantByName(factoryPurchaseOrderDTO.getExportMerchant().getMerchantName());
@@ -121,8 +131,9 @@ public class PersistentOrderService {
     }
 
     public List<FactoryPurchaseOrderDTO> syncProformaInvoiceOrderItemProductIdWithFactoryPurchaseOrderItem(ProformaInvoiceDTO proformaInvoiceDTO, List<FactoryPurchaseOrderDTO> factoryPurchaseOrderDTOList){
-        log.debug("start to sync ProformaInvoiceOrderItemProductIdWithFactoryPurchaseOrderItem");
+        log.debug("start to sync ProformaInvoiceOrderItemProductIdWithFactoryPurchaseOrderItem " + factoryPurchaseOrderDTOList.toString());
         factoryPurchaseOrderDTOList.forEach(factoryPurchaseOrderDTO ->{
+            log.debug("factoryPurchaseOrderDTO in the loop"+ factoryPurchaseOrderDTO.toString());
             factoryPurchaseOrderDTO.getFactoryPurchaseOrderItemDTOList().forEach(factoryPurchaseOrderItemDTO -> {
                 log.debug("factoryPurchaseOrderItemDTO "+ factoryPurchaseOrderItemDTO.toString());
 
@@ -147,11 +158,13 @@ public class PersistentOrderService {
 
         // 输出 OrderB 的 product 以验证
         factoryPurchaseOrderDTOList.forEach(factoryPurchaseOrderDTO -> {
+            log.debug("factoryPurchaseOrderDTO in the product loop"+ factoryPurchaseOrderDTO.toString());
             factoryPurchaseOrderDTO.getFactoryPurchaseOrderItemDTOList().forEach(orderItem ->
                     log.debug("factoryPurchaseOrderDTO Product Name: " + orderItem.getProduct().getImportProductModel() +
                             ", Product ID: " + orderItem.getProduct().getId())
             );
         });
+        log.debug("after to sync ProformaInvoiceOrderItemProductIdWithFactoryPurchaseOrderItem " + factoryPurchaseOrderDTOList.toString());
         return factoryPurchaseOrderDTOList;
     }
 

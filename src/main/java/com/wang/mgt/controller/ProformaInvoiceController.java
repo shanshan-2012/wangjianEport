@@ -91,6 +91,7 @@ public class ProformaInvoiceController {
         try {
             // 将文件保存到目标路径
             dest = new File(uploadPath + fileName);
+            log.debug("import file " + dest.getName());
             file.transferTo(dest);
             result = proformaInvoiceService.loadUploadFile(dest);
             return "文件上传成功: " + fileName;

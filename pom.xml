@@ -10,7 +10,6 @@
     <version>1.0</version>
     <name>WangExportMerchant</name>
 
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

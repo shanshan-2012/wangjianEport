@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+
 @Slf4j
 public class FactoryPurchaseOrderProcessor implements DataProcessor {
 
@@ -129,7 +130,7 @@ public class FactoryPurchaseOrderProcessor implements DataProcessor {
                     String[] factoryOrderSignLocationParts = factoryOrderSignLocation.split(ExporterConstants.CHINESE_COLON_DELIMITOR);
                     factoryPurchaseOrderDTO.setOrderSignLocation(factoryOrderSignLocationParts[1].trim());
                     log.debug("factoryOrderSignLocationParts[1].trim() " + factoryOrderSignLocationParts[1].trim());
-                    SimpleDateFormat formatter1 = new SimpleDateFormat("YYYY-MM-DD", Locale.ENGLISH);
+                    SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                     Date localDate = formatter1.parse(factoryOrderDateParts[1].trim().toLowerCase());
                     log.debug("factoryOrderDateParts[1].trim() " + factoryOrderDateParts[1].trim());
 

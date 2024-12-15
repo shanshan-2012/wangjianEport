@@ -17,7 +17,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.wang.dataload" level="debug">
+    <logger name="com.wang" level="debug">
         <appender-ref ref="FILE" />
     </logger>
 

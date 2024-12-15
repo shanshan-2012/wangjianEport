@@ -18,7 +18,7 @@ public interface ProformaInvoiceMapper {
 
         public  int insertExportMerchant(ExportMerchant exportMerchant);
 
-        public ImportMerchant searchImportMerchantByName(String merchantName);
+        public ImportMerchant searchImportMerchantByAddress(String merchantAddress);
 
         public ExportMerchant searchExportMerchantByName(String merchantName);
 

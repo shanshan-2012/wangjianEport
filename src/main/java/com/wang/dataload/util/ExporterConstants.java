@@ -88,6 +88,7 @@ public interface ExporterConstants {
     String FACTORY_ORDER_FORM_EXPORTER_NAME = "生产厂家：";
     String FACTORY_ORDER_FORM_ITEM_START = "以下产品请安排生产：";
     String FACTORY_ORDER_FORM_PACKAGE = "产品包装：";
+    String FACTORY_ORDER_FORM_PACKAGE1 = "包装：";
     String FACTORY_ORDER_FORM_DELIVERY = "交货：";
     String FACTORY_ORDER_FORM_REMARK = "要求：";
     String FACTORY_ORDER_FORM_ITEM_REMARK = "备注";
@@ -97,7 +98,7 @@ public interface ExporterConstants {
     String FACTORY_ORDER_FORM_ITEM_UNIT_PRICE= "单价(元)";
     String FACTORY_ORDER_FORM_ITEM_TOTAL = "合计(元)";
     String FACTORY_ORDER_FORM_ITEM_TOTALS = "合计：";
-    String WANGJIAN_EOD = "汪健 2022-4-26";
+    String WANGJIAN_EOD = "汪健";
 
 
     int FACTORY_ORDER_FORM_REMARK_COLUMN = 1;
