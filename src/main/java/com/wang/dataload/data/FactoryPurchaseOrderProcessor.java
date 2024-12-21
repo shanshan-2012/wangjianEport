@@ -182,8 +182,8 @@ public class FactoryPurchaseOrderProcessor implements DataProcessor {
 
                 }
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            log.error("An error occurred: {}", e.getMessage(), e);
         }
     }
 

@@ -96,7 +96,7 @@ public class ProformaInvoiceController {
             result = proformaInvoiceService.loadUploadFile(dest);
             return "文件上传成功: " + fileName;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("An error occurred: {}", e.getMessage(), e);
             return "文件上传失败: " + e.getMessage();
 
         }

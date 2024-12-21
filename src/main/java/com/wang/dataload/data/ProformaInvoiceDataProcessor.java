@@ -139,8 +139,8 @@ public class ProformaInvoiceDataProcessor implements DataProcessor {
                     proformaInvoiceDTO.setPaymentMethod(termModeParts[1].trim());
                 }
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception e) {
+            log.error("An error occurred: {}", e.getMessage(), e);
         }
         //处理Proforma订单的内容
 

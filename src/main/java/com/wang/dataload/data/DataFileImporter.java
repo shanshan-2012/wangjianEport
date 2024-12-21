@@ -131,7 +131,7 @@ public class DataFileImporter {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+           log.error("An error occurred: {}", e.getMessage(), e);
         }
 
         return persistentOrderService.persistentOrder(proformaInvoiceDTO, factoryPurchaseOrderDTOList);

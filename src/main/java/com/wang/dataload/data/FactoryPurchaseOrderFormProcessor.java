@@ -113,8 +113,8 @@ public class FactoryPurchaseOrderFormProcessor implements DataProcessor {
                     localDate = formatter1.parse(factoryOrderDate);
                     log.debug("localDate " + localDate);
                 }
-                catch (Exception ex) {
-                    ex.printStackTrace();
+                catch (Exception e) {
+                    log.error("An error occurred: {}", e.getMessage(), e);
                 }
 
                 factoryPurchaseOrderDTO.setFactoryOrderDate(localDate);
