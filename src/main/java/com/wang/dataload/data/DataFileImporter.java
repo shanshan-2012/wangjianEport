@@ -30,9 +30,7 @@ public class DataFileImporter {
     String exportDataType = null;
     DataProcessor dataProcessor = null;
     String cellValue = null;
-    ProformaInvoiceDTO proformaInvoiceDTO = null;
-    List<FactoryPurchaseOrderDTO> factoryPurchaseOrderDTOList = null;
-    FactoryPurchaseOrderDTO factoryPurchaseOrderDTO = null;
+
 
     @Autowired
     PersistentOrderService persistentOrderService;
@@ -87,6 +85,9 @@ public class DataFileImporter {
 
     public boolean fileImporter(File file) {
         log.debug("fileImporter filename " + file.getName());
+        ProformaInvoiceDTO proformaInvoiceDTO = null;
+        List<FactoryPurchaseOrderDTO> factoryPurchaseOrderDTOList = null;
+        FactoryPurchaseOrderDTO factoryPurchaseOrderDTO = null;
        try (FileInputStream fis = new FileInputStream(file);
              Workbook workbook = new XSSFWorkbook(fis)) {
 
@@ -111,22 +112,34 @@ public class DataFileImporter {
                  }
                 log.debug(" sheet name " + sheet.getSheetName());
                 if (sheet.getSheetName().equals(ExporterConstants.PROFORMAL_INVOICE_SHEET)) {
+                    log.debug(" ProformaInvoice data object sheet");
                     ProformaInvoiceDataProcessor proformaInvoiceDataProcessor = (ProformaInvoiceDataProcessor)dataProcessor;
                     proformaInvoiceDTO = proformaInvoiceDataProcessor.getProformaInvoiceDTO();
                     log.debug(" ProformaInvoice data object " + proformaInvoiceDTO.toString());
                 }
                 else  if (sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_YOUKAI)) {
+                    log.debug(" FactoryPurchaseOrderProcessor data object sheet YOUKAI");
                     FactoryPurchaseOrderProcessor factoryPurchaseOrderProcessor = (FactoryPurchaseOrderProcessor)dataProcessor;
                     factoryPurchaseOrderDTO = factoryPurchaseOrderProcessor.getFactoryPurchaseOrderDTO();
-                    factoryPurchaseOrderDTOList = new ArrayList<FactoryPurchaseOrderDTO>();
-                    factoryPurchaseOrderDTOList.add(factoryPurchaseOrderDTO);
                     log.debug("factoryPurchaseOrderDTO " + factoryPurchaseOrderDTO.toString());
+                    if(factoryPurchaseOrderDTOList == null) {
+                        factoryPurchaseOrderDTOList = new ArrayList<FactoryPurchaseOrderDTO>();
+                    }
+                    factoryPurchaseOrderDTOList.add(factoryPurchaseOrderDTO);
+
                 }
-                else  if (sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_SIJIEER) ||sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_ZHANWANG) ) {
+                else  if (sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_SIJIEER) ||sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_ZHANWANG)
+                || sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_CHONNGCHUAN)) {
+                    log.debug(" ProformaInvoice data object CHONNGCHUAN  or ZHANWANG or SIJIEER " );
                     FactoryPurchaseOrderFormProcessor factoryPurchaseOrderFormProcessor = (FactoryPurchaseOrderFormProcessor)dataProcessor;
+
                     factoryPurchaseOrderDTO = factoryPurchaseOrderFormProcessor.getFactoryPurchaseOrderDTO();
-                    factoryPurchaseOrderDTOList.add(factoryPurchaseOrderDTO);
                     log.debug("factoryPurchaseOrderDTO " + factoryPurchaseOrderDTO.toString());
+                    if(factoryPurchaseOrderDTOList == null) {
+                        factoryPurchaseOrderDTOList = new ArrayList<FactoryPurchaseOrderDTO>();
+                    }
+                    factoryPurchaseOrderDTOList.add(factoryPurchaseOrderDTO);
+
                 }
             }
 
@@ -139,27 +152,32 @@ public class DataFileImporter {
 
     public void createDataProcessBasedCellValue(Cell cell) {
         int cellIndex = cell.getColumnIndex();
-        log.debug("Cell " + cellIndex + ": ");
+        //log.debug("Cell " + cellIndex + ": ");
 
-        log.debug("CellType " + cell.getCellType() + ": ");
+        //log.debug("CellType " + cell.getCellType() + ": ");
         switch (cell.getCellType()) {
             case STRING:
-                log.debug(cell.getStringCellValue() + "\t");
+                log.debug("cell value" + cell.getStringCellValue() + "\t");
                 cellValue = cell.getStringCellValue();
                 // 基于每个sheet 页面的标题，设置状态标志。
+                String cellValueTrimBetweenSpace = cellValue.replaceAll("\\s", "");
+                if(cellValueTrimBetweenSpace.equals(ExporterConstants.FACTORY_PURCHASE_ORDER_FORM)){
+                    log.debug("delete space between ExporterConstants.FACTORY_PURCHASE_ORDER_FORM");
+                    cellValue = cellValueTrimBetweenSpace;
+                }
                 if (StringUtils.equals(cellValue, ExporterConstants.PROFORMA_INVOICE)) {
-
+                    log.debug("start to process proforma invoice ");
                     exportDataType = ExporterConstants.PROFORMA_INVOICE;
                     dataProcessor = ExporterDataProcessorFactory.createProduct(exportDataType);
-                    log.debug("start to process proforma invoice " + dataProcessor.toString());
+                    log.debug("dataProcessor " + dataProcessor.toString());
 
                 } else if (StringUtils.equals(cellValue, ExporterConstants.FACTORY_PURCHASE_ORDER)) {
-
+                    log.debug("start to process factory purchase order");
                     exportDataType = ExporterConstants.FACTORY_PURCHASE_ORDER;
                     dataProcessor = ExporterDataProcessorFactory.createProduct(exportDataType);
                     log.debug("start to process factory purchase order " + dataProcessor.toString());
                 } else if (StringUtils.equals(cellValue, ExporterConstants.FACTORY_PURCHASE_ORDER_FORM)) {
-
+                    log.debug("start to process factory purchase order form");
                     exportDataType = ExporterConstants.FACTORY_PURCHASE_ORDER_FORM;
                     dataProcessor = ExporterDataProcessorFactory.createProduct(exportDataType);
                     log.debug("start to process factory purchase order form " + dataProcessor.toString());
@@ -167,7 +185,8 @@ public class DataFileImporter {
                // 基于状态标志 确定对应处理器
 
                 if (dataProcessor != null) {
-                   dataProcessor.processData(cell);
+                    log.debug("dataProcessor " + dataProcessor.toString());
+                    dataProcessor.processData(cell);
                 }
                 break;
             case NUMERIC:
@@ -197,9 +216,9 @@ public class DataFileImporter {
         }
     }
 
-    public void syncProformaInvoiceOrderItemProductIdWithFactoryPurchaseOrderItem(){
+    public void syncProformaInvoiceOrderItemProductIdWithFactoryPurchaseOrderItem(List<FactoryPurchaseOrderDTO> factoryPurchaseOrderDTOList, ProformaInvoiceDTO proformaInvoiceDTO){
         log.debug("start to sync ProformaInvoiceOrderItemProductIdWithFactoryPurchaseOrderItem");
-        log.debug("factoryPurchaseOrderDTO.getFactoryPurchaseOrderItemDTOList()" + factoryPurchaseOrderDTO.getFactoryPurchaseOrderItemDTOList().toString());
+        log.debug("factoryPurchaseOrderDTO.getFactoryPurchaseOrderItemDTOList()" + factoryPurchaseOrderDTOList.toString());
         factoryPurchaseOrderDTOList.forEach(factoryPurchaseOrderDTO ->{
             factoryPurchaseOrderDTO.getFactoryPurchaseOrderItemDTOList().forEach(factoryPurchaseOrderItemDTO -> {
                     log.debug("factoryPurchaseOrderItemDTO "+ factoryPurchaseOrderItemDTO.toString());
@@ -221,13 +240,14 @@ public class DataFileImporter {
 
                             });
             });
+            factoryPurchaseOrderDTO.getFactoryPurchaseOrderItemDTOList().forEach(orderItem ->
+                    log.debug("factoryPurchaseOrderDTO Product Name: " + orderItem.getProduct().getImportProductModel() +
+                            ", Product ID: " + orderItem.getProduct().getId())
+            );
+
         });
 
-        // 输出 OrderB 的 product 以验证
-        factoryPurchaseOrderDTO.getFactoryPurchaseOrderItemDTOList().forEach(orderItem ->
-               log.debug("factoryPurchaseOrderDTO Product Name: " + orderItem.getProduct().getImportProductModel() +
-                        ", Product ID: " + orderItem.getProduct().getId())
-        );
+
     }
 
 }

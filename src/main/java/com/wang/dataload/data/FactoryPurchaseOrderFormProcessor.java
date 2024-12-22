@@ -57,30 +57,39 @@ public class FactoryPurchaseOrderFormProcessor implements DataProcessor {
         if (cellValue instanceof String) {
             String cellValueStr = (String) cellValue;
             log.debug("FactoryPurchaseOrderFormProcessor string cell value " + cellValueStr);
-            if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_REMARK)) {
+            if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_REMARK) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_REMARK1)) {
                 log.debug(" set order form remark ind");
                 remarkInd = true;
-                remarkBF = new StringBuffer();
+                packingInd = false;
+                deliveryInd = false;
+                if(remarkBF == null) {
+                    remarkBF = new StringBuffer();
+                }
             } else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_START)) {
                 log.debug(" set order form item ind");
                 exporterMerchantInd = false;
                 orderFormItemInd = true;
             }
-            else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_TOTALS)) {
+            else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_TOTALS) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_TOTALS1)){
                 log.debug(" end order form item ind");
 
                 orderFormItemInd = false;
             }
-            else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_DELIVERY)) {
+            else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_DELIVERY) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_DELIVERY1)) {
                 log.debug(" set order form delivery ind");
                 deliveryInd = true;
                 remarkInd = false;
-                factoryPurchaseOrderDTO.setRemark(remarkBF.toString());
-            } else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_PACKAGE) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_PACKAGE1)) {
+                packingInd = false;
+                //factoryPurchaseOrderDTO.setRemark(remarkBF.toString());
+            } else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_PACKAGE) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_PACKAGE1)
+                    || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_PACKAGE2) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_PACKAGE3)) {
                 log.debug(" set order form package ind");
                 packingInd = true;
-                packageBF = new StringBuffer();
+                if(packageBF == null) {
+                    packageBF = new StringBuffer();
+                }
                 deliveryInd = false;
+                remarkInd = false;
             } else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_NO)) {
                 log.debug(" set order form  ind");
                 orderFormInd = true;
@@ -104,7 +113,10 @@ public class FactoryPurchaseOrderFormProcessor implements DataProcessor {
 
             } else if (((String) cellValue).contains(ExporterConstants.WANGJIAN_EOD)){
                 packingInd = false;
+                deliveryInd = false;
+                remarkInd = false;
                 factoryPurchaseOrderDTO.setPackageMode(packageBF.toString());
+                factoryPurchaseOrderDTO.setRemark(remarkBF.toString());
                 String factoryOrderDate = ((String)cellValue).substring(ExporterConstants.WANGJIAN_EOD.length()).trim();
                 log.debug("factoryOrderDate " + factoryOrderDate);
                 SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
@@ -233,7 +245,7 @@ public class FactoryPurchaseOrderFormProcessor implements DataProcessor {
                     log.debug("factoryPurchaseOrderItemDTO   " + factoryPurchaseOrderItemDTO.toString());
                 }
             } else if (cell.getColumnIndex() == ExporterConstants.FACTORY_ORDER_FORM_ITEM_EXPORTER_REMARK_COLUMN) {
-                if (!cellValueStr.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_REMARK)) {
+                if (!cellValueStr.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_REMARK) && !cellValueStr.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_REMARK1)) {
                     log.debug("FACTORY_ORDER_FORM_ITEM_REMARK   " + cellValueStr);
 
                     factoryPurchaseOrderItemDTO.setRemark(cellValueStr);

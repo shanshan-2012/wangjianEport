@@ -114,8 +114,16 @@ public class ProformaInvoiceDataProcessor implements DataProcessor {
                 if (cell.getColumnIndex() == ExporterConstants.PROFORMA_INVOICE_IMPORTER_TO_COLUMN) {
                     importerAddressSB.append(cellValueStr + "\n");
 
-                } else if (cellValueStr.contains(ExporterConstants.PROFORMA_INVOICE_NO) && cellValueStr.contains(ExporterConstants.PROFORMA_INVOICE_DATE)) {
-                    int dateIndex = cellValueStr.indexOf(ExporterConstants.PROFORMA_INVOICE_DATE);
+                } else if (cellValueStr.contains(ExporterConstants.PROFORMA_INVOICE_NO) && (cellValueStr.contains(ExporterConstants.PROFORMA_INVOICE_DATE)
+                 || cellValueStr.contains(ExporterConstants.PROFORMA_INVOICE_DATE1)) ) {
+                    int dateIndex = 0;
+                    if(cellValueStr.contains(ExporterConstants.PROFORMA_INVOICE_DATE1)){
+                        dateIndex = cellValueStr.indexOf(ExporterConstants.PROFORMA_INVOICE_DATE1);
+                    }
+                    else  if(cellValueStr.contains(ExporterConstants.PROFORMA_INVOICE_DATE1)) {
+                        dateIndex = cellValueStr.indexOf(ExporterConstants.PROFORMA_INVOICE_DATE);
+                    }
+
                     String invoiceNo = cellValueStr.substring(0, dateIndex);
                     String invoiceDate = cellValueStr.substring(dateIndex, cellValueStr.length());
                     String[] invoiceNoParts = invoiceNo.split(":");
@@ -125,7 +133,7 @@ public class ProformaInvoiceDataProcessor implements DataProcessor {
                     log.debug("invoiceDate " + invoiceDateParts[1].trim());
                     SimpleDateFormat formatter1 = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
                     Date localDate = formatter1.parse(invoiceDateParts[1].trim().toLowerCase());
-
+                    log.debug("parse invoiceDate " + localDate.toString());
                     proformaInvoiceDTO.setProformaInvoiceDate(localDate);
 
                 } else if (cellValueStr.contains(ExporterConstants.PROFORMA_INVOICE_SHIPMENT) && cellValueStr.contains(ExporterConstants.PROFORMA_INVOICE_TERM)) {

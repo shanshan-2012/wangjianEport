@@ -8,7 +8,7 @@ public interface ExporterConstants {
     //Proforma Invoice
     String PROFORMA_INVOICE = "PROFORMA INVOICE";
     String FACTORY_PURCHASE_ORDER = "出 口 产 品 采 购 合 同";
-    String FACTORY_PURCHASE_ORDER_FORM = "订      单";
+    String FACTORY_PURCHASE_ORDER_FORM = "订单";
     String PROFORMA_INVOICE_IMPORTER_TO = "TO:";
     String PROFORMA_INVOICE_BROKER_FROM = "FROM:";
     int  PROFORMA_INVOICE_IMPORTER_TO_COLUMN = 1;
@@ -17,6 +17,7 @@ public interface ExporterConstants {
     int  PROFORMA_INVOICE_BROKER_BANK_COLUMN = 1;
     String PROFORMA_INVOICE_NO = "INVOICE NO";
     String PROFORMA_INVOICE_DATE = "DATED";
+    String PROFORMA_INVOICE_DATE1 = "DATE";
     String PROFORMA_INVOICE_SHIPMENT = "SHIPMENT";
     String PROFORMA_INVOICE_TERM = "TERM";
     String PROFORMA_INVOICE_FROM = "FROM:";
@@ -89,15 +90,21 @@ public interface ExporterConstants {
     String FACTORY_ORDER_FORM_ITEM_START = "以下产品请安排生产：";
     String FACTORY_ORDER_FORM_PACKAGE = "产品包装：";
     String FACTORY_ORDER_FORM_PACKAGE1 = "包装：";
+    String FACTORY_ORDER_FORM_PACKAGE2 = "包装要求:";
+    String FACTORY_ORDER_FORM_PACKAGE3 = "包装:";
     String FACTORY_ORDER_FORM_DELIVERY = "交货：";
+    String FACTORY_ORDER_FORM_DELIVERY1 = "交货期：";
     String FACTORY_ORDER_FORM_REMARK = "要求：";
+    String FACTORY_ORDER_FORM_REMARK1 = "要求如下：";
     String FACTORY_ORDER_FORM_ITEM_REMARK = "备注";
+    String FACTORY_ORDER_FORM_ITEM_REMARK1 = "说  明";
     String FACTORY_ORDER_FORM_ITEM_MODEL = "客户型号";
     String FACTORY_ORDER_FORM_ITEM_SUMMARY = "总计";
     String FACTORY_ORDER_FORM_ITEM_QUANTITY = "数量(个）";
     String FACTORY_ORDER_FORM_ITEM_UNIT_PRICE= "单价(元)";
     String FACTORY_ORDER_FORM_ITEM_TOTAL = "合计(元)";
     String FACTORY_ORDER_FORM_ITEM_TOTALS = "合计：";
+    String FACTORY_ORDER_FORM_ITEM_TOTALS1 = "共  计:";
     String WANGJIAN_EOD = "汪健";
 
 
@@ -117,6 +124,7 @@ public interface ExporterConstants {
     String FACTORY_PURCHASE_ORDER_YOUKAI = "优凯";
     String FACTORY_PURCHASE_ORDER_SIJIEER = "斯捷尔";
     String FACTORY_PURCHASE_ORDER_ZHANWANG = "展望";
+    String FACTORY_PURCHASE_ORDER_CHONNGCHUAN = "重传";
 
     //Product
     String CENTER_BEARING_FROM = "CENTER BEARING FROM";
