@@ -129,7 +129,7 @@ public class DataFileImporter {
 
                 }
                 else  if (sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_SIJIEER) ||sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_ZHANWANG)
-                || sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_CHONNGCHUAN)) {
+                || sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_CHONNGCHUAN) || sheet.getSheetName().equals(ExporterConstants.FACTORY_PURCHASE_ORDER_YONGCHAO)) {
                     log.debug(" ProformaInvoice data object CHONNGCHUAN  or ZHANWANG or SIJIEER " );
                     FactoryPurchaseOrderFormProcessor factoryPurchaseOrderFormProcessor = (FactoryPurchaseOrderFormProcessor)dataProcessor;
 
@@ -165,7 +165,7 @@ public class DataFileImporter {
                     log.debug("delete space between ExporterConstants.FACTORY_PURCHASE_ORDER_FORM");
                     cellValue = cellValueTrimBetweenSpace;
                 }
-                if (StringUtils.equals(cellValue, ExporterConstants.PROFORMA_INVOICE)) {
+                if (StringUtils.equals(cellValue, ExporterConstants.PROFORMA_INVOICE) ) {
                     log.debug("start to process proforma invoice ");
                     exportDataType = ExporterConstants.PROFORMA_INVOICE;
                     dataProcessor = ExporterDataProcessorFactory.createProduct(exportDataType);

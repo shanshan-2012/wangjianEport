@@ -57,7 +57,8 @@ public class FactoryPurchaseOrderFormProcessor implements DataProcessor {
         if (cellValue instanceof String) {
             String cellValueStr = (String) cellValue;
             log.debug("FactoryPurchaseOrderFormProcessor string cell value " + cellValueStr);
-            if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_REMARK) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_REMARK1)) {
+            if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_REMARK) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_REMARK1)
+            || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_REMARK2) ) {
                 log.debug(" set order form remark ind");
                 remarkInd = true;
                 packingInd = false;
@@ -70,7 +71,8 @@ public class FactoryPurchaseOrderFormProcessor implements DataProcessor {
                 exporterMerchantInd = false;
                 orderFormItemInd = true;
             }
-            else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_TOTALS) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_TOTALS1)){
+            else if (cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_TOTALS) || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_TOTALS2)
+                    || cellValue.equals(ExporterConstants.FACTORY_ORDER_FORM_ITEM_TOTALS1)){
                 log.debug(" end order form item ind");
 
                 orderFormItemInd = false;

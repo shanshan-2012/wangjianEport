@@ -10,7 +10,9 @@ public interface ExporterConstants {
     String FACTORY_PURCHASE_ORDER = "出 口 产 品 采 购 合 同";
     String FACTORY_PURCHASE_ORDER_FORM = "订单";
     String PROFORMA_INVOICE_IMPORTER_TO = "TO:";
+    String PROFORMA_INVOICE_IMPORTER_TO1 = "BUYER: ";
     String PROFORMA_INVOICE_BROKER_FROM = "FROM:";
+    String PROFORMA_INVOICE_BROKER_FROM1 = "BUYER: ";
     int  PROFORMA_INVOICE_IMPORTER_TO_COLUMN = 1;
     int  PROFORMA_INVOICE_BROKER_FROM_COLUMN = 1;
     int  PROFORMA_INVOICE_MARKS_COLUMN = 3;
@@ -21,7 +23,9 @@ public interface ExporterConstants {
     String PROFORMA_INVOICE_SHIPMENT = "SHIPMENT";
     String PROFORMA_INVOICE_TERM = "TERM";
     String PROFORMA_INVOICE_FROM = "FROM:";
+
     String PROFORMA_INVOICE_TO = "TO:";
+
     String PROFORMA_INVOICE_REMARK = "MARKS:";
 
     String BROKER_BANK_NAME = "Bank name";
@@ -95,6 +99,7 @@ public interface ExporterConstants {
     String FACTORY_ORDER_FORM_DELIVERY = "交货：";
     String FACTORY_ORDER_FORM_DELIVERY1 = "交货期：";
     String FACTORY_ORDER_FORM_REMARK = "要求：";
+    String FACTORY_ORDER_FORM_REMARK2 = "要求:";
     String FACTORY_ORDER_FORM_REMARK1 = "要求如下：";
     String FACTORY_ORDER_FORM_ITEM_REMARK = "备注";
     String FACTORY_ORDER_FORM_ITEM_REMARK1 = "说  明";
@@ -104,6 +109,7 @@ public interface ExporterConstants {
     String FACTORY_ORDER_FORM_ITEM_UNIT_PRICE= "单价(元)";
     String FACTORY_ORDER_FORM_ITEM_TOTAL = "合计(元)";
     String FACTORY_ORDER_FORM_ITEM_TOTALS = "合计：";
+    String FACTORY_ORDER_FORM_ITEM_TOTALS2 = "合计";
     String FACTORY_ORDER_FORM_ITEM_TOTALS1 = "共  计:";
     String WANGJIAN_EOD = "汪健";
 
@@ -125,6 +131,7 @@ public interface ExporterConstants {
     String FACTORY_PURCHASE_ORDER_SIJIEER = "斯捷尔";
     String FACTORY_PURCHASE_ORDER_ZHANWANG = "展望";
     String FACTORY_PURCHASE_ORDER_CHONNGCHUAN = "重传";
+    String FACTORY_PURCHASE_ORDER_YONGCHAO = "永超";
 
     //Product
     String CENTER_BEARING_FROM = "CENTER BEARING FROM";
